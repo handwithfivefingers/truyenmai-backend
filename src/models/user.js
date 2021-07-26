@@ -40,6 +40,10 @@ const userSchema = new mongoose.Schema({
     enum: ['user','admin'],
     default:'user',
   },
+  projectOwner : {
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Project',
+  },
   contactNumber: {
     type: String,
   },
@@ -54,7 +58,7 @@ userSchema.virtual('fullName')
 .get(function() {
   return `${this.firstName} ${this.lastName}`;
 })
-
+ 
 // Check password methods
 userSchema.methods = {
   authenticate: async function(password) {

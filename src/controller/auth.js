@@ -5,41 +5,53 @@ const bcrypt = require('bcrypt');
 const shortid = require('shortid');
 
 // Register
-exports.signup = async ( req,res) => {
-
+exports.signup = ( req,res) => {
 User.findOne({
   email: req.body.email
-}).exec( async (error, user) => {
+})
+.exec( async (error, user) => {
   if(user) return res.status(400).json({
     message: 'User already registerd'
   })
-})
-const {
-  firstName,
-  lastName,
-  email,
-  password
-} = req.body;
-
-const hash_password = await bcrypt.hash(password, 10);
-const _user = new User({
-  firstName,
-  lastName,
-  email,
-  hash_password,
-  username: shortid.generate(),
-})
-_user.save((error,data) => {
-  if(error) {
-    return res.status(400).json({
-      message: 'Something went wrong'
-    });
-  }
-  if(data) {
-    return res.status(201).json({
-      message: 'User created successfully'
-    })
-  }
+  const {
+    firstName,
+    lastName,
+    email,
+    password
+  } = req.body;
+ 
+  const hash_password = await bcrypt.hash(password, 10);
+  const _user = new User({
+    firstName,
+    lastName,
+    email,
+    hash_password,
+    username: shortid.generate(),
+  })
+  _user.save((error,data) => {
+    if(error) {
+      return res.status(400).json({
+        message: 'Something went wrong'
+      });
+    }
+    if(data) {
+      const token = jwt.sign({ _id: data._id,role: data.role}, process.env.JWT_SECRET, { expiresIn: process.env.JWT_Expired})
+      const { _id, firstName, lastName, email, role, fullName } = data;
+      // return source
+      return res.status(201).json({
+        token,
+        user: {
+            _id,
+            firstName,
+            lastName,
+            email,
+            role,
+            fullName
+        },
+        message: 'User created successfully'
+      })
+    }
+  })
 })
 }
 

@@ -6,14 +6,15 @@ const cors = require('cors');
 const multiparty = require('connect-multiparty');
 const multipartMiddleware = multiparty();
 const path = require('path');
+const bodyParser = require('body-parser');
 // const {upload} = require('./common-middleware/index');
 
 
 //Routes
 const authRoutes = require('./routes/auth');
 const postRoutes = require('./routes/post');
-const uploadRouter = require('./routes/image');
-
+const projectRoutes = require('./routes/project');
+const taskRoutes = require('./routes/task');
 // Setup environment
 env.config();
 
@@ -31,20 +32,25 @@ mongoose.set('useFindAndModify', true);
 mongoose.set('useCreateIndex', true);
 
 // middleware
-// app.use(bodyParser.urlencoded({extended:true}))
+
 app.use(express.json());
+// app.use(express.urlencoded({extended:false}))
+// app.use(bodyParser.urlencoded({extended:true}))
 app.use(cors());
+
 
 // Routes middleware
 app.use('/public', express.static( path.join(__dirname, 'uploads')));
 
 app.use('/api', authRoutes);
 app.use('/api', postRoutes);
-
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  next();
-});
+app.use('/api', projectRoutes);
+app.use('/api', taskRoutes);
+ 
+// app.use((req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', '*');
+//   next();
+// });
 
 app.use('/uploads'  , multipartMiddleware, function(req, res) {
   var fs = require('fs');
