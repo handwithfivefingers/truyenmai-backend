@@ -23,4 +23,5 @@ if( req.headers.authorization) {
 } else {
   return res.status(400).json({message: 'Authorization required'})
 }
+next();
 }

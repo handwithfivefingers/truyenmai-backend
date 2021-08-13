@@ -3,28 +3,36 @@ const bcrypt = require('bcrypt');
 
 const tasksSchema = new mongoose.Schema({
   project: {
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: 'Project', 
-      required: true
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Project',
+    required: true
   },
   name: {
-      type: String,
-      required: true,
-      trim: true,
+    type: String,
+    required: true,
+    trim: true,
   },
   desc: {
-      type:String,
-      trim:true,
+    type: String,
+    trim: true,
   },
-  status : {
-      type: Number,
-      required: true,
+  issue: {
+    type: String,
+    trim: true,
+  },
+  progress: {
+    type: Number,
+    required: true,
+  },
+  status: {
+    type: Number,
+    required: true,
   },
   profilePicture: {
     type: String,
   },
 
-}, {timestamps:true});
+}, { timestamps: true });
 
 // // Get FullName methods
 // userSchema.virtual('fullName')

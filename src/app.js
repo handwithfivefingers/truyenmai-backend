@@ -75,30 +75,6 @@ app.use('/uploads'  , multipartMiddleware, function(req, res) {
   });
 });
 
-// app.post('/uploads',MultipartyMiddleware, (req,res) => {
-//   console.log(req.files.name);
-// });
-// app.post('/uploads',MultipartyMiddleware,(req,res) =>{
-//     fs.readFile(req.files.upload.path, function (err, data) {
-//       var newPath = __dirname + './src/uploads/' + req.files.upload.name;
-//       fs.writeFile(newPath, data, function (err) {
-//           if (err) console.log({err: err});
-//           else {
-//               html = "";
-//               html += "<script type='text/javascript'>";
-//               html += "    var funcNum = " + req.query.CKEditorFuncNum + ";";
-//               html += "    var url     = \"/uploads/" + req.files.upload.name + "\";";
-//               html += "    var message = \"Uploaded file successfully\";";
-//               html += "";
-//               html += "    window.parent.CKEDITOR.tools.callFunction(funcNum, url, message);";
-//               html += "</script>";
-//               res.send(html);
-//           }
-//       });
-//   });
-// })
-
-
 // App run
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`);
