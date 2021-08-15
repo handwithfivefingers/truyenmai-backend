@@ -12,6 +12,6 @@ router.post('/task/delete', requireSignin, upload.none(), deleteTask);
 
 router.post('/task/search', upload.none(), searchTask);
 
-router.get('/initialdata', initialData)
+router.post('/initialdata', requireSignin, upload.none(), initialData)
 
 module.exports = router;

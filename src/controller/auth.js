@@ -62,13 +62,10 @@ exports.signin = (req, res) => {
     email: req.body.email
   })
     .exec(async (error, user) => {
-
       // If have error
       if (error) return res.status(400).json({ error })
-
       // If have user
       if (user) {
-
         // If have user and user have authen password ( password method in UserSchema ) 
         if (user.authenticate(req.body.password)) {
 
