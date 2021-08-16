@@ -9,7 +9,7 @@ exports.createTask = (req, res) => {
             desc: req.body.desc,
             status: req.body.status,
             project: req.body.project,
-            issue: req.body.status,
+            issue: req.body.issue,
             progress: req.body.progress,
       }
       const tasks = new Task(taskObj);
@@ -23,8 +23,8 @@ exports.updateTask = async (req, res) => {
             name: req.body.name,
             desc: req.body.desc,
             status: req.body.status,
-            issue: req.body.status,
-            progress: req.body.progress,
+            issue: req.body.issue,
+            progress: req.body.progress
       }
       const task = await Task.findOneAndUpdate({ _id: req.body.id }, taskObj, { new: true });
       return res.status(201).json({ task });
@@ -53,7 +53,7 @@ exports.searchTask = async (req, res) => {
                   { name: regex },
                   { project: req.body.project }
             ]
-      }).select('_id name project desc status').exec();
+      }).select('_id name project desc status progress issue').exec();
       return res.status(200).json({
             task
       })
