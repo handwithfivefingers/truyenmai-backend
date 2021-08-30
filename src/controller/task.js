@@ -50,11 +50,21 @@ exports.searchTask = async (req, res) => {
       const projectregex = new RegExp(req.body.project, 'i');
       const task = await Task.find({
             "$and": [
-                  { name: regex },
+                  {
+                        "$or": [
+                              { name: regex },
+                              { desc: regex }
+                        ]
+                  },
                   { project: req.body.project }
             ]
       }).select('_id name project desc status progress issue').exec();
-      return res.status(200).json({
-            task
+      if (task) {
+            return res.status(200).json({
+                  task
+            })
+      } else return res.status(400).json({
+            error: 'something went error'
       })
+
 }
