@@ -85,6 +85,13 @@ exports.searchTask = async (req, res) => {
                   return res.status(200).json({
                         task: newTask
                   })
+            } else if (req.body.status !== undefined && req.body.status !== '') {
+                  let returnTask = task.filter(item => {
+                        return item.status == req.body.status ? item : ''
+                  })
+                  return res.status(200).json({
+                        task: returnTask
+                  })
             } else {
                   // default ... 
                   return res.status(200).json({
