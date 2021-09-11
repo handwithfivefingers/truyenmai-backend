@@ -48,21 +48,50 @@ exports.deleteTask = async (req, res) => {
 exports.searchTask = async (req, res) => {
       const regex = new RegExp(req.body.search, 'i');
       const projectregex = new RegExp(req.body.project, 'i');
+
+      // Find Task by Name, Desc & Project ID
       const task = await Task.find({
             "$and": [
                   {
                         "$or": [
                               { name: regex },
-                              { desc: regex }
-                        ]
+                              { desc: regex },
+                        ],
                   },
-                  { project: req.body.project }
+                  { project: req.body.project },
             ]
-      }).select('_id name project desc status progress issue').exec();
+      },
+      ).select('_id name project desc status progress issue updatedAt ').exec();
       if (task) {
-            return res.status(200).json({
-                  task
-            })
+
+            // Filer Task by Date
+            if (req.body.date !== undefined && req.body.date !== '') {
+                  let returnTask = []
+                  let newTask = []
+                  newTask = task.filter(item => {
+                        return item.updatedAt.getTime() >= Date.parse(req.body.date) ? item : ''
+                  })
+                  // more 1 filter for status 
+                  if (req.body.status !== undefined && req.body.status !== '') {
+                        returnTask = newTask.filter(item => {
+                              return item.status == req.body.status ? item : ''
+                        })
+                        // return .... ( date -> status )
+                        return res.status(200).json({
+                              task: returnTask
+                        })
+                  }
+                  // return .... ( date )
+                  return res.status(200).json({
+                        task: newTask
+                  })
+            } else {
+                  // default ... 
+                  return res.status(200).json({
+                        task
+                  })
+            }
+
       } else return res.status(400).json({
             error: 'something went error'
       })
