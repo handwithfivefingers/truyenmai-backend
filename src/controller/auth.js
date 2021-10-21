@@ -11,7 +11,7 @@ exports.signup = (req, res) => {
   })
     .exec(async (error, user) => {
       if (user) return res.status(400).json({
-        message: 'User already registerd'
+        message: 'Email đã được đăng kí, vui lòng đổi sang email khác !'
       })
       const {
         firstName,
@@ -31,7 +31,8 @@ exports.signup = (req, res) => {
       _user.save((error, data) => {
         if (error) {
           return res.status(400).json({
-            message: 'Something went wrong'
+            message: 'Something went wrong',
+            error
           });
         }
         if (data) {
@@ -48,7 +49,7 @@ exports.signup = (req, res) => {
               role,
               fullName
             },
-            message: 'User created successfully'
+            message: 'Tạo tài khoản thành công'
           })
         }
       })
@@ -67,8 +68,8 @@ exports.signin = (req, res) => {
       // If have user
       if (user) {
         // If have user and user have authen password ( password method in UserSchema ) 
-        if (user.authenticate(req.body.password)) {
-
+        let password = await user.authenticate(req.body.password);
+        if (password) {
           // Generate Token
           const token = jwt.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_Expired })
           const { _id, firstName, lastName, email, role, fullName } = user;
@@ -88,7 +89,7 @@ exports.signin = (req, res) => {
         // If authen password wrong
         else {
           return res.status(400).json({
-            message: 'Invalid password'
+            message: 'Sai mật khẩu, vui lòng thử lại sau !'
           })
         }
       }
