@@ -114,50 +114,32 @@ exports.getTaskDone = async (req, res) => {
             ]
       }).select('_id').exec();
       if (project) {
-            project.map(async (projectItem, index) => {
-                  // const res = await checkTaskNumber(projectItem._id)
-                  // try {
-                  //       console.log(res)
-                  // }
-                  // finally {
-                  //       console.log(res);
-                  // }
-                  xhtml.push(projectItem._id);
-            })
-            console.log(xhtml);
-            try {
-                  const data = await checkTaskNumber(xhtml);
-                  if (data) {
-                        console.log(data);
-                  }
-            }
-            catch {
-                  return res.status(400).json({
-                        error: 'loi clgt'
+            project.map(projectItem => xhtml.push(projectItem._id))
+            checkTaskNumber(xhtml)
+                  .then(res => newTask = res.reduce((total, num) => total + num))
+                  .finally(() => {
+                        return res.status(200).json({
+                              taskDone: newTask
+                        })
                   })
-            }
-            finally {
-                  return res.status(200).json({
-                        taskDone: xhtml
-                  })
-            }
 
       } else return res.status(400).json({
             error: 'something went error'
       })
-
 }
-
-checkTaskNumber = async (arr) => {
-      let newTask = 0;
-      newTask = arr.map(async (id) => {
-            let task = await Task.find({
-                  "$and": [
-                        { project: id },
-                  ]
-            },
-            ).select('_id status').exec()
-            if (task) newTask += task.filter(item => item.status === 2).length
-      })
-      return newTask
+/**
+ * @function CheckArr
+ * @param {Array} ids
+ * @returns { array } 
+ */
+checkTaskNumber = async (ids) => { // Promise All
+      let promise = ids.map(id => Task.find({
+            "$and": [
+                  { project: id },
+            ]
+      },
+      ).select('_id status').exec()
+            .then(res => res.filter(item => item.status === 2).length)
+      )
+      return Promise.all(promise);
 }

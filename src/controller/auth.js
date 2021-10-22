@@ -113,3 +113,48 @@ exports.checkUser = (req, res) => {
     message: 'Login Successfully'
   })
 }
+
+// Search user
+exports.findUser = async (req, res) => {
+  // console.log(req.body.name)
+  const name = new RegExp(req.body.name, 'i');
+  // const { name } = req.body;
+  const user = await User.find({
+    "$or": [
+      { firstName: name },
+      { lastName: name },
+      { email: name }
+    ],
+  },
+  ).select('_id firstName lastName username email role ').exec();
+  if (user) return res.status(200).json({
+    user: user
+  })
+}
+exports.addUsertoProject = async (req, res) => {
+  let user = req.body.user.split(',');
+  // user.map(item => {
+  //   const newUser = User.find({ email: user })
+  //   return Promise.all(newUser);
+  // })
+  // const response = await checkUser(user);
+  checkUser(user)
+    .then(res => {
+      res.map(item => console.log(item[0]))
+    })
+    .finally(() => {
+      console.log('done')
+    })
+  // if(response) console.log('check res', response)
+  res.status(200).json({
+    status: 'oke'
+  })
+}
+
+checkUser = async (users) => { // Promise All
+  let promise = users.map(email => {
+    return User.find({ email: email.substring(1, email.length) })
+      .select("_id role username").exec().then(res => res)
+  })
+  return Promise.all(promise);
+}
