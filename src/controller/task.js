@@ -31,14 +31,19 @@ exports.updateTask = async (req, res) => {
 }
 exports.initialData = async (req, res) => {
       const userID = req.body.id;
-      const project = await Project.find({
-            "$and": [
-                  { userOwner: userID }
+      Project.find({
+            "$or": [
+                  { userOwner: userID },
+                  { userAccess: userID }
             ]
-      }).exec()
-      return res.status(200).json({
-            project,
+      }).exec(async (err, project) => {
+            if (project) return res.status(200).json({
+                  project,
+            })
+            if (err) return res.status(400).json({ error: err })
       })
+
+
 }
 exports.deleteTask = async (req, res) => {
       const task = await Task.findOneAndDelete({ _id: req.body._id });

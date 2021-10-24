@@ -133,28 +133,47 @@ exports.findUser = async (req, res) => {
 }
 exports.addUsertoProject = async (req, res) => {
   let user = req.body.user.split(',');
-  // user.map(item => {
-  //   const newUser = User.find({ email: user })
-  //   return Promise.all(newUser);
-  // })
-  // const response = await checkUser(user);
+  let projectId = req.body.projectId;
+  console.log(projectId);
+  let allUser = []
   checkUser(user)
-    .then(res => {
-      res.map(item => console.log(item[0]))
+    .then(response => {
+      response.map(item => item[0] ? allUser.push(item[0]) : '')
     })
     .finally(() => {
-      console.log('done')
+      // console.log('done')
+      // allUser -> _id role username
+      if (allUser.length > 0) {
+        // allUser.map(item => )
+        let newpromise = allUser.map(item => {
+          return User.findOneAndUpdate({ _id: item._id, request: { "$ne": projectId } },
+            // { request: [...request, projectId] }
+            { $push: { request: [projectId] } }
+            , { new: true })
+        })
+        Promise.all(newpromise).then(response => {
+          console.log('response', response)
+        })
+          .finally(() => {
+            res.status(200).json({
+              success: true
+            })
+          })
+      } else {
+        res.status(200).json({
+          success: false,
+          message: 'User not found'
+        })
+      }
     })
-  // if(response) console.log('check res', response)
-  res.status(200).json({
-    status: 'oke'
-  })
+
 }
 
-checkUser = async (users) => { // Promise All
+checkUser = async (users) => { // Promise All -> return userArray [ { _id, role, username, } ]
   let promise = users.map(email => {
     return User.find({ email: email.substring(1, email.length) })
-      .select("_id role username").exec().then(res => res)
+      .select("_id role username").exec()
+      .then(user => user)
   })
   return Promise.all(promise);
 }

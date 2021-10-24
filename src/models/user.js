@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-    unique:true,
+    unique: true,
     index: true,
     lowercase: true,
   },
@@ -37,11 +37,11 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['user','admin'],
-    default:'user',
+    enum: ['user', 'admin'],
+    default: 'user',
   },
-  projectOwner : {
-    type: mongoose.Schema.Types.ObjectId, 
+  projectOwner: {
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Project',
   },
   contactNumber: {
@@ -50,18 +50,24 @@ const userSchema = new mongoose.Schema({
   profilePicture: {
     type: String,
   },
+  request: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Project',
+    }
+  ]
 
-}, {timestamps:true});
+}, { timestamps: true });
 
 // Get FullName methods
 userSchema.virtual('fullName')
-.get(function() {
-  return `${this.firstName} ${this.lastName}`;
-})
- 
+  .get(function () {
+    return `${this.firstName} ${this.lastName}`;
+  })
+
 // Check password methods
 userSchema.methods = {
-  authenticate: async function(password) {
+  authenticate: async function (password) {
     return await bcrypt.compare(password, this.hash_password)
   }
 }

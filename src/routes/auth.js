@@ -1,6 +1,7 @@
 const express = require('express');
 const { upload, requireSignin } = require('./../common-middleware/index');
 const { signup, signin, signOut, checkUser, findUser, addUsertoProject } = require('../controller/auth');
+const { acceptRequest } = require('../controller/project');
 
 const router = express.Router();
 
