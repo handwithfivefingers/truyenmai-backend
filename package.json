@@ -1,6 +1,6 @@
 {
   "name": "truyenmai.server",
-  "home":"https://miniature-coat-production.up.railway.app",
+  "home": "https://miniature-coat-production.up.railway.app",
   "version": "1.0.0",
   "description": "Backend truyenmai.com",
   "main": "index.js",
