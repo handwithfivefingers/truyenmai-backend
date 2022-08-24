@@ -5,23 +5,45 @@ const multer = require('multer');
 
 // Setup Uploads folder
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path.join(path.dirname(__dirname), 'uploads'))
-  },
-  filename: function (req, file, cb) {
-    cb(null, shortid.generate() + '-' + file.originalname)
-  }
-})
+	destination: function (req, file, cb) {
+		cb(null, path.join(path.dirname(__dirname), 'uploads'));
+	},
+	filename: function (req, file, cb) {
+		cb(null, shortid.generate() + '-' + file.originalname);
+	},
+});
+
 exports.upload = multer({ storage });
 
 // Config Validate Signin
-exports.requireSignin = (req, res, next) => {
-  if (req.headers.authorization) {
-    const token = req.headers.authorization.split(" ")[1];
-    const user = jwt.verify(token, process.env.JWT_SECRET)
-    req.user = user
-  } else {
-    return res.status(400).json({ message: 'Authorization required' })
-  }
-  next();
-}
+exports.requireSignin = async (req, res, next) => {
+	let token = req.cookies['sessionID'];
+	if (!token) return res.status(401).json({ message: 'Authorization required' });
+	else {
+		try {
+			const decoded = await jwt.verify(token, process.env.SECRET);
+			if (decoded) {
+				const newToken = jwt.sign({ _id: decoded._id, role: decoded.role }, process.env.SECRET, {
+					expiresIn: process.env.EXPIRE_TIME,
+				});
+				req.role = decoded.role;
+				req.id = decoded._id;
+
+				var hour = 3600000;
+
+				res.cookie('create-company-token', newToken, {
+					maxAge: 2 * 24 * hour,
+					httpOnly: true,
+				});
+				next();
+			} else {
+				res.clearCookie();
+				// authFailedHandler(res);
+				return res.status(400).json({ message: 'Login attempt failed' , error: err});
+			}
+		} catch (err) {
+			return res.status(400).json({ message: 'something went wrong' , error: err});
+		}
+	}
+
+};
