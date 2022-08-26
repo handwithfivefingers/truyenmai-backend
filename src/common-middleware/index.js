@@ -21,10 +21,10 @@ exports.requireSignin = async (req, res, next) => {
 	if (!token) return res.status(401).json({ message: 'Authorization required' });
 	else {
 		try {
-			const decoded = await jwt.verify(token, process.env.SECRET);
+			const decoded = await jwt.verify(token, process.env.JWT_SECRET);
 			if (decoded) {
-				const newToken = jwt.sign({ _id: decoded._id, role: decoded.role }, process.env.SECRET, {
-					expiresIn: process.env.EXPIRE_TIME,
+				const newToken = jwt.sign({ _id: decoded._id, role: decoded.role }, process.env.JWT_SECRET, {
+					expiresIn: process.env.JWT_EXPIRED,
 				});
 				req.role = decoded.role;
 				req.id = decoded._id;
@@ -38,12 +38,11 @@ exports.requireSignin = async (req, res, next) => {
 				next();
 			} else {
 				res.clearCookie();
-				// authFailedHandler(res);
-				return res.status(400).json({ message: 'Login attempt failed' , error: err});
+				return res.status(400).json({ message: 'Login attempt failed', error: err });
 			}
 		} catch (err) {
-			return res.status(400).json({ message: 'something went wrong' , error: err});
+			res.clearCookie();
+			return res.status(400).json({ message: 'something went wrong', error: err });
 		}
 	}
-
 };
