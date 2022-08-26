@@ -2,9 +2,11 @@ const express = require('express');
 const router = express.Router();
 const shortid = require('shortid');
 const { upload, requireSignin } = require('./../common-middleware/index');
-const { createTask, initialData, updateTask, deleteTask, searchTask, getTaskDone } = require('../controller/task');
-const TaskRouter = require('../controller/Task/Task');
 
+const { createTask, initialData, updateTask, deleteTask, searchTask, getTaskDone } = require('../controller/task');
+
+const TaskRouter = require('../controller/Task/Task');
+const { validate, taskUpdate } = require('../validator/task');
 const TaskRoute = new TaskRouter();
 
 router.post('/task/create', requireSignin, upload.none(), createTask);
@@ -22,5 +24,7 @@ router.post('/initialdata', requireSignin, upload.none(), initialData);
 router.post('/fetchtaskdone', requireSignin, upload.none(), getTaskDone);
 
 router.post('/task', requireSignin, upload.none(), TaskRoute.getAll);
+
+router.post('/task/:id', validate(taskUpdate), requireSignin, upload.none(), TaskRoute.updateTask);
 
 module.exports = router;
