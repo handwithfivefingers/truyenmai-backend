@@ -31,6 +31,7 @@ exports.updateTask = async (req, res) => {
   });
   return res.status(201).json({ task });
 };
+
 exports.initialData = async (req, res) => {
   const userID = req.body.id;
   Project.find({
@@ -43,6 +44,7 @@ exports.initialData = async (req, res) => {
     if (err) return res.status(400).json({ error: err });
   });
 };
+
 exports.deleteTask = async (req, res) => {
   const task = await Task.findOneAndDelete({ _id: req.body._id });
   return res.status(200).json({ message: "Delete success" });

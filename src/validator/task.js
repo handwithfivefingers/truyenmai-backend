@@ -17,7 +17,10 @@ const validate = (validations) => {
 
 const taskUpdate = [body('status').notEmpty()];
 
+const taskFetch = [body('search').optional()];
+
 module.exports = {
 	validate,
-    taskUpdate
+	taskUpdate,
+	taskFetch,
 };

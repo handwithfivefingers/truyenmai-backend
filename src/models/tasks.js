@@ -1,38 +1,45 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-const tasksSchema = new mongoose.Schema({
-  project: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Project',
-    required: true
-  },
-  name: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  desc: {
-    type: String,
-    trim: true,
-  },
-  issue: {
-    type: String,
-    trim: true,
-  },
-  progress: {
-    type: Number,
-    required: true,
-  },
-  status: {
-    type: Number,
-    required: true,
-  },
-  profilePicture: {
-    type: String,
-  },
-
-}, { timestamps: true });
+const tasksSchema = new mongoose.Schema(
+	{
+		project: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Project',
+			required: true,
+		},
+		name: {
+			type: String,
+			required: true,
+			trim: true,
+		},
+		desc: {
+			type: String,
+			trim: true,
+		},
+		issue: {
+			type: String,
+			trim: true,
+		},
+		progress: {
+			type: Number,
+			required: true,
+		},
+		status: {
+			type: Number,
+			required: true,
+		},
+		profilePicture: {
+			type: String,
+		},
+		delete: {
+			type: Number,
+			enum: [0, 1],
+			default: 0,
+		},
+	},
+	{ timestamps: true }
+);
 
 // // Get FullName methods
 // userSchema.virtual('fullName')
@@ -47,4 +54,4 @@ const tasksSchema = new mongoose.Schema({
 //   }
 // }
 
-module.exports = mongoose.model('Tasks', tasksSchema)
+module.exports = mongoose.model('Tasks', tasksSchema);
