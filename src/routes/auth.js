@@ -8,23 +8,48 @@ const router = express.Router();
 
 const AuthenticateRoute = new Authenticate();
 
-// Create User
+/**
+ * @api {post} /signup Register
+ * @apiName Register
+ * @apiGroup Authenticate
+ *
+ * @apiSuccess { Array } data
+ */
 router.post('/signup', upload.none(), AuthenticateRoute.Register);
-
-// Login User
-// router.post('/signin', upload.none(), signin);
-router.post('/signin', upload.none(), AuthenticateRoute.Login );
-
-
-// Login User
-// router.post('/signin', upload.none(), signin);
-router.post('/reset-password', upload.none(), AuthenticateRoute.ResetPassword );
-
-
-// Sign out
-router.post('/signout', upload.none(),  AuthenticateRoute.Logout);
-
-// Login again
+/**
+ * @api {post} /signin Login
+ * @apiName GetAll
+ * @apiGroup Authenticate
+ *
+ * @apiParam {String} email
+ * @apiParam {String} password
+ *
+ * @apiSuccess { Array } data
+ */
+router.post('/signin', upload.none(), AuthenticateRoute.Login);
+/**
+ * @api {post} /reset-password ResetPassword
+ * @apiName ResetPassword
+ * @apiGroup Authenticate
+ *
+ * @apiSuccess { Array } data
+ */
+router.post('/reset-password', upload.none(), AuthenticateRoute.ResetPassword);
+/**
+ * @api {post} /signout Logout
+ * @apiName Logout
+ * @apiGroup Authenticate
+ *
+ * @apiSuccess { Array } data
+ */
+router.post('/signout', upload.none(), AuthenticateRoute.Logout);
+/**
+ * @api {post} /auth Authorization
+ * @apiName Authorization
+ * @apiGroup Authenticate
+ *
+ * @apiSuccess { String } message
+ */
 router.post('/auth', upload.none(), requireSignin, AuthenticateRoute.Authorization);
 
 // Search User

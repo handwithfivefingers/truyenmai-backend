@@ -1,0 +1,17 @@
+{
+	"name": "AcmeCorp Api documentation",
+	"version": "0.3.0",
+	"description": "Documentation for the REST api access provided at AcmeCorp",
+	"title": "Custom apiDoc browser title",
+	"url": "http://localhost:3000/api",
+	"sampleUrl": "http://localhost:3000/api",
+	"output": "/tmp/apidoc-output",
+	"input": ["example"],
+	"order": ["User", "PostUser", "GetUser", "City", "Category (official)"],
+	"template": {
+		"showRequiredLabels": false,
+		"withCompare": true,
+		"withGenerator": true,
+		"aloneDisplay": false
+	}
+}

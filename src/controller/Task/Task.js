@@ -3,9 +3,9 @@ const { notFoundHandler, successHandler, permissionHandler, errorHandler, existD
 const { generateToken } = require('../../helper/common');
 
 module.exports = class TaskRouter {
+
 	getAll = async (req, res) => {
 		try {
-			
 			const { search, _id } = req.body;
 
 			const searchReg = new RegExp(search, 'i');
@@ -53,12 +53,10 @@ module.exports = class TaskRouter {
 		} catch (err) {
 			return errorHandler(req, res, err);
 		}
-
 	};
 
 	updateTask = async (req, res) => {
 		try {
-
 			const { id } = req.params;
 
 			await Task.findOneAndUpdate({ _id: id }, { ...req.body });
