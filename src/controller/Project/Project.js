@@ -18,88 +18,58 @@ module.exports = class ProjectRouter {
 			return errorHandler(req, res, err);
 		}
 	};
-	// Login = async (req, res) => {
-	// 	try {
-	// 		let { email, password } = req.body;
+	createProject = async (req, res) => {
+		try {
+			const projectObj = {
+				name: req.body.name,
+				desc: req.body.desc,
+				status: req.body.status,
+				progress: req.body.progress,
+				userOwner: req.body.userid,
+				slug: slugify(req.body.name).toLowerCase() + '-' + shortid.generate(),
+			};
 
-	// 		let _user = await User.findOne({ email });
+			const project = new Project(projectObj);
+			await project.save();
 
-	// 		if (!_user) return notFoundHandler(req, res);
+			return successHandler(req, res);
+		} catch (err) {
+			return errorHandler(req, res, err);
+		}
+	};
 
-	// 		let isMatch = await _user.authenticate(password);
+	updateProject = async (req, res) => {
+		try {
+			const { id } = req.params;
 
-	// 		console.log(isMatch);
+			let _project = await Task.findById({ _id: id, userOwner: req.id });
 
-	// 		if (isMatch) {
-	// 			await generateToken({ _id: _user._id, role: _user.role }, res);
+			if (_project) {
+				for (let key in req.body) {
+					_project[key] = req.body[key];
+				}
 
-	// 			return successHandler(req, res);
-	// 		}
+				await _project.save();
 
-	// 		return permissionHandler(req, res);
-	// 	} catch (err) {
-	// 		console.log(err);
-	// 		return errorHandler(req, res, err);
-	// 	}
-	// };
+				return successHandler(req, res);
+			}
 
-	// Register = async (req, res) => {
-	// 	try {
-	// 		let _user = await User.findOne({
-	// 			email: req.body.email,
-	// 		});
+			throw 'Project not found';
+		} catch (err) {
+			return errorHandler(req, res, err);
+		}
+	};
 
-	// 		if (_user) {
-	// 			return existData(req, res, 'Email');
-	// 		}
-	// 		const { firstName, lastName, email, password } = req.body;
+	deleteProject = async (req, res) => {
+		try {
+			const { id } = req.params;
 
-	// 		const hash_password = await bcrypt.hash(password, 10);
+			await Project.findOneAndUpdate({ _id: id }, { delete: 1 });
 
-	// 		const user = new User({
-	// 			firstName,
-	// 			lastName,
-	// 			email,
-	// 			hash_password,
-	// 			username: shortid.generate(),
-	// 		});
-
-	// 		await user.save();
-
-	// 		await generateToken({ _id: user._id, role: user.role }, res);
-
-	// 		return successHandler(req, res);
-	// 	} catch (err) {
-	// 		return errorHandler(req, res, err);
-	// 	}
-	// };
-
-	// Authorization = (req, res) => {
-	// 	return successHandler(req, res);
-	// };
-
-	// Logout = (req, res) => {
-	// 	res.clearCookie();
-	// 	return res.redirect('/');
-	// };
-
-	// ResetPassword = async (req, res) => {
-	// 	try {
-	// 		let { email, password } = req.body;
-
-	// 		let _user = await User.findOne({ email });
-
-	// 		if (!_user) return notFoundHandler(req, res);
-
-	// 		let hash_password = await bcrypt.hash(password, 10);
-
-	// 		_user.hash_password = hash_password;
-
-	// 		await _user.save();
-
-	// 		return successHandler(req, res);
-	// 	} catch (err) {
-	// 		return errorHandler(req, res, err);
-	// 	}
-	// };
+			return res.status(200).json({ message: 'Delete success' });
+		} catch (err) {
+			console.log(err);
+			return errorHandler(req, res, err);
+		}
+	};
 };

@@ -14,6 +14,7 @@ const authRoutes = require('./routes/auth');
 const postRoutes = require('./routes/post');
 const projectRoutes = require('./routes/project');
 const taskRoutes = require('./routes/task');
+const userRoutes = require('./routes/user');
 
 // Setup environment
 env.config();
@@ -42,6 +43,7 @@ app.use('/api', authRoutes);
 app.use('/api', postRoutes);
 app.use('/api', projectRoutes);
 app.use('/api', taskRoutes);
+app.use('/api', userRoutes);
 
 app.use((req, res, next) => {
 	res.header('Access-Control-Allow-Origin', '*');

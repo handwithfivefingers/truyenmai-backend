@@ -4,6 +4,7 @@ const shortid = require("shortid");
 const Project = require("../models/project");
 
 exports.createTask = (req, res) => {
+
   const taskObj = {
     name: req.body.name,
     desc: req.body.desc,
@@ -12,11 +13,14 @@ exports.createTask = (req, res) => {
     issue: req.body.issue,
     progress: req.body.progress,
   };
+
   const tasks = new Task(taskObj);
+
   tasks.save((error, task) => {
     if (error) return res.status(400).json({ error });
     if (task) return res.status(201).json({ task });
   });
+  
 };
 exports.updateTask = async (req, res) => {
   const taskObj = {

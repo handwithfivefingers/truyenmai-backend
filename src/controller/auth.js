@@ -152,7 +152,6 @@ exports.addUsertoProject = async (req, res) => {
 				let newpromise = allUser.map((item) => {
 					return User.findOneAndUpdate(
 						{ _id: item._id, request: { $ne: projectId } },
-						// { request: [...request, projectId] }
 						{ $push: { request: [projectId] } },
 						{ new: true }
 					);
